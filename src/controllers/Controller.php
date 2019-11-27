@@ -3,25 +3,17 @@
 namespace App\controllers;
 
 
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+
 class Controller {
     private const VIEWS_PATH = "\\src\\views";
     private const NOT_FOUND_VIEW_PATH = "404_not_found.html";
 
-    final protected function simpleParseView(string $viewName, array $params = []) : string {
-        $path = DOCUMENT_ROOT . self::VIEWS_PATH . "\\" . $viewName;
-        if (empty($viewName)
-            || !file_exists($path)) {
-            throw new \Exception("View requested does not exists. ViewName: {$viewName}\n Path: {$path}");
-        }
-        ob_start();
-        include_once $path;
-        $view = ob_get_contents();
-        ob_end_clean();
-
-        foreach ($params as $target => $replacement) {
-            $view = str_replace("{{{$target}}}", $replacement, $view);
-        }
-        return $view;
+    final protected function parseView(string $viewName, array $params = []) : string {
+        $loader = new FilesystemLoader(DOCUMENT_ROOT . self::VIEWS_PATH);
+        $twig = new Environment($loader);
+        return $twig->render($viewName, $params);
     }
 
     final public function getNotFoundView() : string {
