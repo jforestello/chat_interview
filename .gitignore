@@ -2,4 +2,4 @@ vendor
 composer.lock
 bootstrap/database.db
 bootstrap/cache
-
+\.idea
