@@ -2,7 +2,6 @@
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\CacheItem;
 use Illuminate\Container\Container;
-use App\database\Database;
 
 $pool = new FilesystemAdapter('', 0, DOCUMENT_ROOT."/bootstrap/cache");
 
@@ -14,11 +13,4 @@ if (! $cachedItem->isHit()) {
 }
 $container = $cachedItem->get();
 
-$cachedItem = $pool->getItem('app.database.connector');
-if (! $cachedItem->isHit()) {
-    $cachedItem->set(new Database);
-    $pool->save($cachedItem);
-}
-$database = $cachedItem->get();
-
-return [$container, $database];
+return [$container];

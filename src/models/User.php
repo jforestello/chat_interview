@@ -93,6 +93,14 @@ class User implements iModel {
     }
 
     /**
+     * @return string
+     */
+    public function getPassword() : ?string
+    {
+        return $this->password;
+    }
+
+    /**
      * @param string $password
      * @return User
      */

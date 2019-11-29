@@ -21,14 +21,19 @@ use App\repositories\ChatChannelRepository;
 use App\repositories\MessageRepository;
 use Illuminate\Container\Container;
 use App\database\Database;
+use \Illuminate\Routing\Pipeline;
+use \App\middlewares\StartSession;
 
 /**
  * Loads the container and the database from the cache
  * @var Container $container
  * @var Database $database
  */
-[$container, $database] = require_once '../bootstrap/autoload.php';
+[$container] = require_once '../bootstrap/autoload.php';
 
+$database = new Database;
+
+$sessionStarter = new StartSession();
 // Create a request from server variables, and bind it to the container; optional
 $request = Request::capture();
 
@@ -44,20 +49,34 @@ $events = new Dispatcher($container);
 // Create the router instance
 $router = new Router($events, $container);
 
+// Routes middlewares
+$routerMiddle = [
+    'logged' => \App\middlewares\Logged::class,
+    'guest' => \App\middlewares\Guest::class
+];
+
+// Load the middlewares
+foreach ($routerMiddle as $key => $middle) {
+    $router->aliasMiddleware($key, $middle);
+}
+
 // Load the routes
 require_once '../src/routes/routes.php';
 
 // Create the redirect instance
 $redirect = new Redirector(new UrlGenerator($router->getRoutes(), $request));
 
-// use redirect
-// return $redirect->home();
-// return $redirect->back();
-// return $redirect->to('/');
+require_once '../src/helpers.php';
 
+$container->instance('Illuminate\Routing\Redirector', $redirect);
 try {
     // Dispatch the request through the router
-    $response = $router->dispatch($request);
+    $response = (new Pipeline())
+        ->send($request)
+        ->through($sessionStarter)
+        ->then(function ($request) use ($router) {
+            return $router->dispatch($request);
+        });
 } catch (Exception $e) {
     echo "<pre> Error code: {$e->getCode()}\n Error Message: {$e->getMessage()}";
     die;

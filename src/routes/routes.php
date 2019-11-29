@@ -4,17 +4,19 @@ use Illuminate\Routing\Router;
 
 /** @var $router Router */
 
-$router->get('/', function () {
-    return 'hello world!';
+$router->middleware(["guest"])->group(function (Router $router) {
+    $router->get('/', ['name' => 'guest.login_form', 'uses' => 'App\Controllers\LoginController@login']);
+    $router->get('register', ['name' => 'guest.register_form', 'uses' => 'App\Controllers\LoginController@register']);
+    $router->post('/', ['name' => 'guest.login', 'uses' => 'App\Controllers\UsersController@login']);
+    $router->post('register', ['name' => 'guest.register', 'uses' => 'App\Controllers\UsersController@register']);
 });
 
-$router->get('bye', function () {
-    return 'goodbye world!';
-});
-
-$router->group(['namespace' => 'App\Controllers', 'prefix' => 'users'], function (Router $router) {
-    $router->get('/', ['name' => 'users.index', 'uses' => 'UsersController@index']);
-    $router->post('/', ['name' => 'users.store', 'uses' => 'UsersController@store']);
+$router->middleware(["logged"])->group(function (Router $router) {
+    $router->get('list', ['name' => 'logged.list', 'uses' => 'App\Controllers\ChatController@index']);
+    $router->get('chat/{id}', ['name' => 'logged.chat_detail', 'uses' => 'App\Controllers\ChatController@detail']);
+    $router->post('chat/{id}', ['name' => 'logged.send_message', 'uses' => 'App\Controllers\ChatController@send']);
+    $router->get('chat/{id}/update', ['name' => 'logged.fetch_messages', 'uses' => 'App\Controllers\ChatController@fetchNew']);
+    $router->post('logout', ['name' => 'logged.logout', 'uses' => 'App\Controllers\UsersController@logout']);
 });
 
 // catch-all route

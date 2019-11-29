@@ -5,7 +5,7 @@ namespace App\repositories;
 use App\models\Message;
 
 /**
- * @method fetchOne(array $params, array $order = []) : Message
+ * @method fetchOne(array $params, array $order = []) : ?Message
  * @method fetchMany(array $params, array $order = []) : Message[]
  * @method fetchAll(array $order = []) : Message[]
  * @method save(Message $user, array $filters) : MessageRepository

@@ -5,7 +5,7 @@ namespace App\repositories;
 use App\models\ChatChannel;
 
 /**
- * @method fetchOne(array $params, array $order = []) : ChatChannel
+ * @method fetchOne(array $params, array $order = []) : ?ChatChannel
  * @method fetchMany(array $params, array $order = []) : ChatChannel[]
  * @method fetchAll(array $order = []) : ChatChannel[]
  * @method save(ChatChannel $user, array $filters) : ChatChannelRepository

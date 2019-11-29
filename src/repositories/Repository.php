@@ -101,13 +101,36 @@ SQL;
     private function fetch(array $filters, array $order = [], string $limit = "") : array {
         $where = "";
         foreach ($filters as $field => $value) {
+            $optionalFields = explode("|", $field);
             if (empty($where)) {
                 $where = "WHERE ";
             } else {
                 $where .= " AND ";
             }
-            $filter = is_string($value) ? $this->connector->escapeString($value) : $value;
-            $where .= "{$field} = '{$filter}'";
+            if (count($optionalFields) > 1) {
+                $where .= "(";
+                $first = true;
+                foreach ($optionalFields as $optionalField) {
+                    if (! $first) {
+                        $where .= " OR ";
+                    }
+                    if (is_array($value)) {
+                        $where .= "{$optionalField} IN ('".implode("','", $value)."')";
+                    }else {
+                        $filter = is_string($value) ? $this->connector->escapeString($value) : $value;
+                        $where .= "{$optionalField} = '{$filter}'";
+                    }
+                    $first = false;
+                }
+                $where .= ")";
+            } else {
+                if (is_array($value)) {
+                    $where .= "{$field} IN ('".implode("','", $value)."')" . ($first ? "" : ")");
+                }else {
+                    $filter = is_string($value) ? $this->connector->escapeString($value) : $value;
+                    $where .= "{$field} = '{$filter}'";
+                }
+            }
         }
         $sort = "";
         foreach ($order as $field => $type) {
@@ -122,6 +145,7 @@ SQL;
         $query = <<<SQL
         SELECT {$fields} FROM {$this->table} {$where} {$sort} {$limit}
 SQL;
+
         $result = $this->connector->query($query);
         return $this->parseResult($result);
     }
@@ -131,8 +155,9 @@ SQL;
      * @param array $order
      * @return iModel
      */
-    public function fetchOne(array $params, array $order = []) : iModel {
-        return $this->fetch($params, $order, "LIMIT 1")[0];
+    public function fetchOne(array $params, array $order = []) : ?iModel {
+        $response = $this->fetch($params, $order, "LIMIT 1");
+        return ! empty($response) ? $response[0] : null;
     }
 
     /**
@@ -158,6 +183,9 @@ SQL;
      */
     private function parseResult(\SQLite3Result $data): array
     {
+        if (! $data) {
+            return [];
+        }
         $response = [];
         while ($row = $data->fetchArray(SQLITE3_ASSOC)) {
             $response[] = $this->arrayToModel($row);
