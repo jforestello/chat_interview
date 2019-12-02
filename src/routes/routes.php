@@ -14,7 +14,8 @@ $router->middleware(["guest"])->group(function (Router $router) {
 $router->middleware(["logged"])->group(function (Router $router) {
     $router->get('list', ['name' => 'logged.list', 'uses' => 'App\Controllers\ChatController@index']);
     $router->get('chat/{id}', ['name' => 'logged.chat_detail', 'uses' => 'App\Controllers\ChatController@detail']);
-    $router->post('chat/{id}', ['name' => 'logged.send_message', 'uses' => 'App\Controllers\ChatController@send']);
+    $router->post('chat', ['name' => 'logged.chat_create', 'uses' => 'App\Controllers\ChatController@create']);
+    $router->put('chat/{id}', ['name' => 'logged.send_message', 'uses' => 'App\Controllers\ChatController@send']);
     $router->get('chat/{id}/update', ['name' => 'logged.fetch_messages', 'uses' => 'App\Controllers\ChatController@fetchNew']);
     $router->post('logout', ['name' => 'logged.logout', 'uses' => 'App\Controllers\UsersController@logout']);
 });

@@ -55,7 +55,7 @@ SQL;
      * @return Repository
      * @throws \Exception
      */
-    public function create(iModel $model) : Repository {
+    public function create(iModel &$model) : Repository {
         $data = $this->modelToArray($model);
         unset($data["id"]);
         $fields = implode(",", array_keys($data));
@@ -73,6 +73,7 @@ SQL;
             $this->transaction(Database::ROLLBACK);
             throw new \Exception($this->connector->lastErrorMsg(), $this->connector->lastErrorCode());
         }
+        $model->setId($this->connector->lastInsertRowID());
 
         $this->transaction(Database::COMMIT);
         return $this;
@@ -125,7 +126,7 @@ SQL;
                 $where .= ")";
             } else {
                 if (is_array($value)) {
-                    $where .= "{$field} IN ('".implode("','", $value)."')" . ($first ? "" : ")");
+                    $where .= "{$field} IN ('".implode("','", $value)."')";
                 }else {
                     $filter = is_string($value) ? $this->connector->escapeString($value) : $value;
                     $where .= "{$field} = '{$filter}'";

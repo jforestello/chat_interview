@@ -13,6 +13,10 @@ class Controller {
     final protected function parseView(string $viewName, array $params = []) : string {
         $loader = new FilesystemLoader(DOCUMENT_ROOT . self::VIEWS_PATH);
         $twig = new Environment($loader);
+        $session = $_SESSION['user'] ?? null;
+        if (! is_null($session)) {
+            $params['session'] = $session;
+        }
         return $twig->render($viewName, $params);
     }
 

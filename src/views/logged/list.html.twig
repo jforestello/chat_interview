@@ -1,4 +1,5 @@
 <!doctype html>
+{% set colours = ['bg-primary', 'bg-success', 'bg-info', 'bg-warning', 'bg-danger'] %}
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -7,34 +8,32 @@
     <meta name="description" content="#">
     <link rel="stylesheet" href="assets/css/grayshift.min.css">
     <link rel="stylesheet" href="assets/css/swipe.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="assets/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css" integrity="sha384-AKT9MKPmIq4VMihDqOB6HeDHSsXGyf92WHPCSwHAZPIVJpD8Jv6dmfTLZeLDvV4O" crossorigin="anonymous">
 </head>
 <body>
 <div class="d-flex flex-column flex-lg-row">
     <nav class="navside navside-expand-lg sticky-top order-2 order-lg-0">
         <div class="container">
-            <a class="d-none d-lg-inline" rel="home" href="#">
-                <i class="eva-xl" data-eva="github" data-eva-animation="pulse"></i>
+            <a class="d-none d-lg-inline" href="/list">
+                <i class="eva-xl fa fa-home fa-3x"></i>
             </a>
             <ul class="nav navside-nav" role="tablist" aria-orientation="vertical">
                 <li class="nav-item d-none d-lg-block">
+                    <a href="/logout" class="d-none d-lg-inline" title="Logout">
+                        <i class="fa fa-power-off fa-3x"></i>
+                    </a>
                 </li>
                 <li class="nav-item d-none d-lg-block">
-                    <span class="avatar avatar-md status h5 bg-primary rounded-circle">jd</span>
+                    <span class="avatar avatar-md status h5 bg-primary rounded-circle">{{ session.getFirstName()|first }}{{ session.getLastName()|first }}</span>
                 </li>
             </ul>
         </div>
     </nav>
     <div class="sidebar sidebar-expand-lg order-1 order-lg-0">
         <div class="container py-5 px-lg-5">
-            <form>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <i data-eva="search"></i>
-                    </div>
-                    <input class="form-control form-control-lg" type="search" placeholder="Search" aria-label="Search">
-                </div>
-            </form>
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="channels" role="tabpanel">
                     <div class="d-flex align-items-center mt-5">
@@ -43,152 +42,27 @@
                     <hr class="mb-0">
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="direct" role="tabpanel">
-                            <div class="channel active">
-                                <span class="avatar avatar-sm mr-3 bg-primary rounded-circle">jd</span>
+                            <div class="channel add-new">
                                 <div class="flex-grow-1">
                                     <div class="d-flex align-items-center mb-3">
-                                        <h6 class="mr-auto">John Doe</h6>
-                                        <p class="ml-3">Today</p>
+                                        <h6 class="mr-auto">Start a new conversation</h6>
                                     </div>
-                                    <p class="text">The quick brown fox jumps over the lazy dog.</p>
                                 </div>
+                                <span class="avatar avatar-sm mr-3 bg-primary rounded-circle"><i class="fa fa-paper-plane"></i></span>
                             </div>
-                            <div class="channel">
-                                <span class="avatar avatar-sm mr-3 bg-success rounded-circle">jd</span>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <h6 class="mr-auto">John Doe</h6>
-                                        <p class="ml-3">Sunday</p>
+                            {% for row in data %}
+                                <div class="channel" data-loader="{{ row['chat_id'] }}" data-colour="{{ colours[loop.index] }}">
+                                    <span class="avatar avatar-sm mr-3 {{ colours[loop.index] }} rounded-circle">{{ row['acronym'] }}</span>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <h6 class="mr-auto">{{ row['user'].getFirstName() }} {{ row['user'].getLastName() }}</h6>
+                                        </div>
+                                        <p class="text" {% if row['owner_user'] == false and row['is_seen'] == false %}style="color: black"{% endif %}>
+                                            {% if row['owner_user'] == false %} <i class="fa fa-chevron-right"></i> {% endif %}
+                                            {{ row['last_message'] }}</p>
                                     </div>
-                                    <p class="text">The quick brown fox jumps over the lazy dog.</p>
                                 </div>
-                            </div>
-                            <div class="channel">
-                                <span class="avatar avatar-sm mr-3 bg-info rounded-circle">jd</span>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <h6 class="mr-auto">John Doe</h6>
-                                        <p class="ml-3">Saturday</p>
-                                    </div>
-                                    <p class="text">The quick brown fox jumps over the lazy dog.</p>
-                                </div>
-                            </div>
-                            <div class="channel">
-                                <span class="avatar avatar-sm mr-3 bg-warning rounded-circle">jd</span>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <h6 class="mr-auto">John Doe</h6>
-                                        <p class="ml-3">Friday</p>
-                                    </div>
-                                    <p class="text">The quick brown fox jumps over the lazy dog.</p>
-                                </div>
-                            </div>
-                            <div class="channel">
-                                <span class="avatar avatar-sm mr-3 bg-danger rounded-circle">jd</span>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <h6 class="mr-auto">John Doe</h6>
-                                        <p class="ml-3">Thursday</p>
-                                    </div>
-                                    <p class="text">The quick brown fox jumps over the lazy dog.</p>
-                                </div>
-                            </div>
-                            <div class="channel">
-                                <span class="avatar avatar-sm mr-3 bg-primary rounded-circle">jd</span>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <h6 class="mr-auto">John Doe</h6>
-                                        <p class="ml-3">Wednesday</p>
-                                    </div>
-                                    <p class="text">The quick brown fox jumps over the lazy dog.</p>
-                                </div>
-                            </div>
-                            <div class="channel">
-                                <span class="avatar avatar-sm mr-3 bg-success rounded-circle">jd</span>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <h6 class="mr-auto">John Doe</h6>
-                                        <p class="ml-3">Tuesday</p>
-                                    </div>
-                                    <p class="text">The quick brown fox jumps over the lazy dog.</p>
-                                </div>
-                            </div>
-                            <div class="channel">
-                                <span class="avatar avatar-sm mr-3 bg-info rounded-circle">jd</span>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <h6 class="mr-auto">John Doe</h6>
-                                        <p class="ml-3">Monday</p>
-                                    </div>
-                                    <p class="text">The quick brown fox jumps over the lazy dog.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="groups" role="tabpanel">
-                            <div class="channel flex-column">
-                                <div class="d-flex align-items-center mb-3">
-                                    <span class="avatar avatar-xs mr-3 bg-primary rounded-circle">s</span>
-                                    <h6 class="mr-auto">Squad Ghouls</h6>
-                                    <p class="ml-3">Today</p>
-                                </div>
-                                <p class="text">The quick brown fox jumps over the lazy dog.</p>
-                            </div>
-                            <div class="channel flex-column">
-                                <div class="d-flex align-items-center mb-3">
-                                    <span class="avatar avatar-xs mr-3 bg-success rounded-circle">s</span>
-                                    <h6 class="mr-auto">Squad Ghouls</h6>
-                                    <p class="ml-3">Sunday</p>
-                                </div>
-                                <p class="text">The quick brown fox jumps over the lazy dog.</p>
-                            </div>
-                            <div class="channel flex-column">
-                                <div class="d-flex align-items-center mb-3">
-                                    <span class="avatar avatar-xs mr-3 bg-info rounded-circle">s</span>
-                                    <h6 class="mr-auto">Squad Ghouls</h6>
-                                    <p class="ml-3">Saturday</p>
-                                </div>
-                                <p class="text">The quick brown fox jumps over the lazy dog.</p>
-                            </div>
-                            <div class="channel flex-column">
-                                <div class="d-flex align-items-center mb-3">
-                                    <span class="avatar avatar-xs mr-3 bg-warning rounded-circle">s</span>
-                                    <h6 class="mr-auto">Squad Ghouls</h6>
-                                    <p class="ml-3">Friday</p>
-                                </div>
-                                <p class="text">The quick brown fox jumps over the lazy dog.</p>
-                            </div>
-                            <div class="channel flex-column">
-                                <div class="d-flex align-items-center mb-3">
-                                    <span class="avatar avatar-xs mr-3 bg-danger rounded-circle">s</span>
-                                    <h6 class="mr-auto">Squad Ghouls</h6>
-                                    <p class="ml-3">Thursday</p>
-                                </div>
-                                <p class="text">The quick brown fox jumps over the lazy dog.</p>
-                            </div>
-                            <div class="channel flex-column">
-                                <div class="d-flex align-items-center mb-3">
-                                    <span class="avatar avatar-xs mr-3 bg-primary rounded-circle">s</span>
-                                    <h6 class="mr-auto">Squad Ghouls</h6>
-                                    <p class="ml-3">Wednesday</p>
-                                </div>
-                                <p class="text">The quick brown fox jumps over the lazy dog.</p>
-                            </div>
-                            <div class="channel flex-column">
-                                <div class="d-flex align-items-center mb-3">
-                                    <span class="avatar avatar-xs mr-3 bg-success rounded-circle">s</span>
-                                    <h6 class="mr-auto">Squad Ghouls</h6>
-                                    <p class="ml-3">Tuesday</p>
-                                </div>
-                                <p class="text">The quick brown fox jumps over the lazy dog.</p>
-                            </div>
-                            <div class="channel flex-column">
-                                <div class="d-flex align-items-center mb-3">
-                                    <span class="avatar avatar-xs mr-3 bg-info rounded-circle">s</span>
-                                    <h6 class="mr-auto">Squad Ghouls</h6>
-                                    <p class="ml-3">Monday</p>
-                                </div>
-                                <p class="text">The quick brown fox jumps over the lazy dog.</p>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -201,485 +75,43 @@
                 <div class="flex-grow-1">
                     <div class="container px-lg-5">
                         <div class="chat-header">
-                            <div class="d-flex mr-auto">
-                                <span class="avatar avatar-sm mr-3 bg-info rounded-circle">jd</span>
-                                <div>
-                                    <h6 class="mb-2 lh-100">John Doe</h6>
-                                    <p class="lh-100">Manhattan</p>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <button class="btn d-lg-none ml-5" data-toggle="chat-offcanvas" type="button">
-                                    <i class="eva-md" data-eva="arrow-circle-left" data-eva-animation="pulse"></i>
-                                </button>
-                                <div class="dropdown d-xl-none ml-5">
-                                    <button class="btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                        <i class="eva-md" data-eva="settings-2" data-eva-animation="pulse"></i>
-                                        <span class="sr-only">Toggle Dropdown</span>
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <button class="dropdown-item" data-toggle="modal" data-target="#call" type="button">Video call</button>
-                                        <button class="dropdown-item" data-toggle="modal" data-target="#call" type="button">Voice call</button>
-                                        <button class="dropdown-item" type="button">Members</button>
-                                    </div>
-                                </div>
-                            </div>
+                            <span class="avatar avatar-sm mr-3 bg-info rounded-circle">jd</span>
+                            <h6 class="lh-100">John Doe</h6>
+                            <h6>Chat window</h6> <!-- Placeholder when no chat is active -->
                         </div>
                         <div class="chat-body">
                             <div class="py-5">
-                                <div class="d-flex align-items-end mb-5">
-                                    <span class="avatar avatar-sm mr-3 bg-info rounded-circle">jd</span>
-                                    <div>
-                                        <div class="card mb-3">
-                                            <p>The quick brown fox jumps over the lazy dog.</p>
-                                        </div>
-                                        <p class="lh-100">Monday</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-end justify-content-end mb-5">
-                                    <span class="avatar avatar-sm order-2 ml-3 bg-primary rounded-circle">jd</span>
-                                    <div class="order-1">
-                                        <div class="card mb-3 text-white bg-primary">
-                                            <p>The quick brown fox jumps over the lazy dog.</p>
-                                        </div>
-                                        <p class="lh-100 text-right">Tuesday</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-end mb-5">
-                                    <span class="avatar avatar-sm mr-3 bg-info rounded-circle rounded-circle">jd</span>
-                                    <div>
-                                        <div class="card mb-3">
-                        <span class="icon bg-info rounded-circle mr-3">
-                          <i class="fill-white" data-eva="archive" data-eva-width="20" data-eva-height="20"></i>
-                        </span>
-                                            <div>
-                                                <h6 class="mb-2 lh-100">
-                                                    <a href="#">archive</a>
-                                                </h6>
-                                                <p class="lh-100">40kb</p>
-                                            </div>
-                                        </div>
-                                        <p class="lh-100">Wednesday</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-end justify-content-end mb-5">
-                                    <span class="avatar avatar-sm order-2 ml-3 bg-primary rounded-circle">jd</span>
-                                    <div class="order-1">
-                                        <div class="card mb-3 text-white bg-primary">
-                                            <p>The quick brown fox jumps over the lazy dog.</p>
-                                        </div>
-                                        <p class="lh-100 text-right">Thursday</p>
+                                <!-- justify-content-end for owned messages and mb-5 except in last one -->
+                                <div class="d-flex align-items-end justify-content-center mb-5"> <!-- Placeholder when no chat is active or empty window -->
+                                    <div class="card mb-3">
+                                        <p>Start a new conversation now!</p>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-end mb-5">
                                     <span class="avatar avatar-sm mr-3 bg-info rounded-circle">jd</span>
-                                    <div>
                                         <div class="card mb-3">
                                             <p>The quick brown fox jumps over the lazy dog.</p>
                                         </div>
-                                        <p class="lh-100">Friday</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-end justify-content-end mb-5">
-                                    <span class="avatar avatar-sm order-2 ml-3 bg-primary rounded-circle">jd</span>
-                                    <div class="order-1">
-                                        <div class="card mb-3 text-white bg-primary">
-                                            <p>The quick brown fox jumps over the lazy dog.</p>
-                                        </div>
-                                        <p class="lh-100 text-right">Saturday</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-end mb-5">
-                                    <span class="avatar avatar-sm mr-3 bg-info rounded-circle">jd</span>
-                                    <div>
-                                        <div class="card mb-3">
-                                            <p>The quick brown fox jumps over the lazy dog.</p>
-                                        </div>
-                                        <p class="lh-100">Sunday</p>
-                                    </div>
                                 </div>
                                 <div class="d-flex align-items-end justify-content-end">
                                     <span class="avatar avatar-sm order-2 ml-3 bg-primary rounded-circle">jd</span>
-                                    <div class="order-1">
                                         <div class="card mb-3 text-white bg-primary">
                                             <p>The quick brown fox jumps over the lazy dog.</p>
                                         </div>
-                                        <p class="lh-100 text-right">Today</p>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="chat-footer">
-                            <form>
+                            <form id="submit-form">
                                 <div class="input-group">
-                                    <input class="form-control form-control-lg" placeholder="Type message..." autofocus>
+                                    <input class="form-control form-control-lg" placeholder="Type message..." autofocus name="message" style="color: #495057">
                                     <div class="input-group-append">
                                         <button class="btn" type="submit">
-                                            <i data-eva="paper-plane" data-eva-animation="pulse"></i>
+                                            <i class="fa fa-paper-plane-o"></i>
                                         </button>
                                     </div>
                                 </div>
                             </form>
-                        </div>
-                    </div>
-                    <button class="btn btn-circle btn-neutral sidebar-toggler" data-toggle="sidebar-offcanvas">
-                        <i class="ml-n3" data-eva="chevron-left"></i>
-                    </button>
-                </div>
-                <div class="sidebar sidebar-expand-lg sidebar-offcanvas z-index-high vh-100">
-                    <div class="container py-5 px-lg-5">
-                        <div class="d-flex align-items-center mb-5">
-                            <h3 class="mr-auto">Sidebar</h3>
-                            <button class="btn btn-sm btn-circle btn-neutral" data-toggle="sidebar-offcanvas" type="button">
-                                <i data-eva="close"></i>
-                            </button>
-                        </div>
-                        <ul class="nav nav-tabs nav-justified nav-sm mb-5" role="tablist" aria-orientation="horizontal">
-                            <li class="nav-item">
-                                <a class="nav-link active" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="true">Users</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false">Files</a>
-                            </li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane fade show active" id="users" role="tabpanel">
-                                <hr class="my-0">
-                                <div class="d-flex py-5 border-bottom">
-                                    <span class="avatar avatar-sm mr-3 bg-primary rounded-circle">jd</span>
-                                    <div class="mr-auto">
-                                        <h6 class="mb-2 lh-100">John Doe</h6>
-                                        <p class="lh-100">Manhattan</p>
-                                    </div>
-                                    <div class="dropdown align-self-center ml-3">
-                                        <button class="btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                            <i data-eva="more-vertical"></i>
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <button class="dropdown-item" type="button">Action</button>
-                                            <button class="dropdown-item" type="button">Another action</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex py-5 border-bottom">
-                                    <span class="avatar avatar-sm mr-3 bg-success rounded-circle">jd</span>
-                                    <div class="mr-auto">
-                                        <h6 class="mb-2 lh-100">John Doe</h6>
-                                        <p class="lh-100">Manhattan</p>
-                                    </div>
-                                    <div class="dropdown align-self-center ml-3">
-                                        <button class="btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                            <i data-eva="more-vertical"></i>
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <button class="dropdown-item" type="button">Action</button>
-                                            <button class="dropdown-item" type="button">Another action</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex py-5 border-bottom">
-                                    <span class="avatar avatar-sm mr-3 bg-info rounded-circle">jd</span>
-                                    <div class="mr-auto">
-                                        <h6 class="mb-2 lh-100">John Doe</h6>
-                                        <p class="lh-100">Manhattan</p>
-                                    </div>
-                                    <div class="dropdown align-self-center ml-3">
-                                        <button class="btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                            <i data-eva="more-vertical"></i>
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <button class="dropdown-item" type="button">Action</button>
-                                            <button class="dropdown-item" type="button">Another action</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex py-5 border-bottom">
-                                    <span class="avatar avatar-sm mr-3 bg-warning rounded-circle">jd</span>
-                                    <div class="mr-auto">
-                                        <h6 class="mb-2 lh-100">John Doe</h6>
-                                        <p class="lh-100">Manhattan</p>
-                                    </div>
-                                    <div class="dropdown align-self-center ml-3">
-                                        <button class="btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                            <i data-eva="more-vertical"></i>
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <button class="dropdown-item" type="button">Action</button>
-                                            <button class="dropdown-item" type="button">Another action</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex py-5 border-bottom">
-                                    <span class="avatar avatar-sm mr-3 bg-danger rounded-circle">jd</span>
-                                    <div class="mr-auto">
-                                        <h6 class="mb-2 lh-100">John Doe</h6>
-                                        <p class="lh-100">Manhattan</p>
-                                    </div>
-                                    <div class="dropdown align-self-center ml-3">
-                                        <button class="btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                            <i data-eva="more-vertical"></i>
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <button class="dropdown-item" type="button">Action</button>
-                                            <button class="dropdown-item" type="button">Another action</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex py-5 border-bottom">
-                                    <span class="avatar avatar-sm mr-3 bg-primary rounded-circle">jd</span>
-                                    <div class="mr-auto">
-                                        <h6 class="mb-2 lh-100">John Doe</h6>
-                                        <p class="lh-100">Manhattan</p>
-                                    </div>
-                                    <div class="dropdown align-self-center ml-3">
-                                        <button class="btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                            <i data-eva="more-vertical"></i>
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <button class="dropdown-item" type="button">Action</button>
-                                            <button class="dropdown-item" type="button">Another action</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex py-5 border-bottom">
-                                    <span class="avatar avatar-sm mr-3 bg-success rounded-circle">jd</span>
-                                    <div class="mr-auto">
-                                        <h6 class="mb-2 lh-100">John Doe</h6>
-                                        <p class="lh-100">Manhattan</p>
-                                    </div>
-                                    <div class="dropdown align-self-center ml-3">
-                                        <button class="btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                            <i data-eva="more-vertical"></i>
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <button class="dropdown-item" type="button">Action</button>
-                                            <button class="dropdown-item" type="button">Another action</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex py-5 border-bottom">
-                                    <span class="avatar avatar-sm mr-3 bg-info rounded-circle">jd</span>
-                                    <div class="mr-auto">
-                                        <h6 class="mb-2 lh-100">John Doe</h6>
-                                        <p class="lh-100">Manhattan</p>
-                                    </div>
-                                    <div class="dropdown align-self-center ml-3">
-                                        <button class="btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                            <i data-eva="more-vertical"></i>
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <button class="dropdown-item" type="button">Action</button>
-                                            <button class="dropdown-item" type="button">Another action</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="files" role="tabpanel">
-                                <label class="w-100">
-                                    <input class="d-none" type="file">
-                                    <span class="dropzone">Drag & drop files here</span>
-                                </label>
-                                <div class="card mb-3">
-                                    <div class="card-body d-flex align-items-center">
-                      <span class="icon bg-neutral border rounded-circle">
-                        <i data-eva="file-text" data-eva-width="20" data-eva-height="20"></i>
-                      </span>
-                                        <span class="avatar avatar-sm bg-primary mr-3 ml-n3 border rounded-circle">jd</span>
-                                        <div class="mr-auto">
-                                            <h6 class="mb-2 lh-100">
-                                                <a href="#">text</a>
-                                            </h6>
-                                            <p class="lh-100">8kb</p>
-                                        </div>
-                                        <div class="dropdown">
-                                            <button class="btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                                <i data-eva="more-vertical"></i>
-                                                <span class="sr-only">Toggle Dropdown</span>
-                                            </button>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <button class="dropdown-item" type="button">Action</button>
-                                                <button class="dropdown-item" type="button">Another action</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card mb-3">
-                                    <div class="card-body d-flex align-items-center">
-                      <span class="icon bg-neutral border rounded-circle">
-                        <i data-eva="image-2" data-eva-width="20" data-eva-height="20"></i>
-                      </span>
-                                        <span class="avatar avatar-sm bg-success mr-3 ml-n3 border rounded-circle">jd</span>
-                                        <div class="mr-auto">
-                                            <h6 class="mb-2 lh-100">
-                                                <a href="#">image</a>
-                                            </h6>
-                                            <p class="lh-100">16kb</p>
-                                        </div>
-                                        <div class="dropdown">
-                                            <button class="btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                                <i data-eva="more-vertical"></i>
-                                                <span class="sr-only">Toggle Dropdown</span>
-                                            </button>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <button class="dropdown-item" type="button">Action</button>
-                                                <button class="dropdown-item" type="button">Another action</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card mb-3">
-                                    <div class="card-body d-flex align-items-center">
-                      <span class="icon bg-neutral border rounded-circle">
-                        <i data-eva="film" data-eva-width="20" data-eva-height="20"></i>
-                      </span>
-                                        <span class="avatar avatar-sm bg-info mr-3 ml-n3 border rounded-circle">jd</span>
-                                        <div class="mr-auto">
-                                            <h6 class="mb-2 lh-100">
-                                                <a href="#">video</a>
-                                            </h6>
-                                            <p class="lh-100">24kb</p>
-                                        </div>
-                                        <div class="dropdown">
-                                            <button class="btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                                <i data-eva="more-vertical"></i>
-                                                <span class="sr-only">Toggle Dropdown</span>
-                                            </button>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <button class="dropdown-item" type="button">Action</button>
-                                                <button class="dropdown-item" type="button">Another action</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card mb-3">
-                                    <div class="card-body d-flex align-items-center">
-                      <span class="icon bg-neutral border rounded-circle">
-                        <i data-eva="folder" data-eva-width="20" data-eva-height="20"></i>
-                      </span>
-                                        <span class="avatar avatar-sm bg-warning mr-3 ml-n3 border rounded-circle">jd</span>
-                                        <div class="mr-auto">
-                                            <h6 class="mb-2 lh-100">
-                                                <a href="#">folder</a>
-                                            </h6>
-                                            <p class="lh-100">32kb</p>
-                                        </div>
-                                        <div class="dropdown">
-                                            <button class="btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                                <i data-eva="more-vertical"></i>
-                                                <span class="sr-only">Toggle Dropdown</span>
-                                            </button>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <button class="dropdown-item" type="button">Action</button>
-                                                <button class="dropdown-item" type="button">Another action</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card mb-3">
-                                    <div class="card-body d-flex align-items-center">
-                      <span class="icon bg-neutral border rounded-circle">
-                        <i data-eva="archive" data-eva-width="20" data-eva-height="20"></i>
-                      </span>
-                                        <span class="avatar avatar-sm bg-danger mr-3 ml-n3 border rounded-circle">jd</span>
-                                        <div class="mr-auto">
-                                            <h6 class="mb-2 lh-100">
-                                                <a href="#">archive</a>
-                                            </h6>
-                                            <p class="lh-100">40kb</p>
-                                        </div>
-                                        <div class="dropdown">
-                                            <button class="btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                                <i data-eva="more-vertical"></i>
-                                                <span class="sr-only">Toggle Dropdown</span>
-                                            </button>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <button class="dropdown-item" type="button">Action</button>
-                                                <button class="dropdown-item" type="button">Another action</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card mb-3">
-                                    <div class="card-body d-flex align-items-center">
-                      <span class="icon bg-neutral border rounded-circle">
-                        <i data-eva="file-text" data-eva-width="20" data-eva-height="20"></i>
-                      </span>
-                                        <span class="avatar avatar-sm bg-primary mr-3 ml-n3 border rounded-circle">jd</span>
-                                        <div class="mr-auto">
-                                            <h6 class="mb-2 lh-100">
-                                                <a href="#">text</a>
-                                            </h6>
-                                            <p class="lh-100">48kb</p>
-                                        </div>
-                                        <div class="dropdown">
-                                            <button class="btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                                <i data-eva="more-vertical"></i>
-                                                <span class="sr-only">Toggle Dropdown</span>
-                                            </button>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <button class="dropdown-item" type="button">Action</button>
-                                                <button class="dropdown-item" type="button">Another action</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card mb-3">
-                                    <div class="card-body d-flex align-items-center">
-                      <span class="icon bg-neutral border rounded-circle">
-                        <i data-eva="image-2" data-eva-width="20" data-eva-height="20"></i>
-                      </span>
-                                        <span class="avatar avatar-sm bg-success mr-3 ml-n3 border rounded-circle">jd</span>
-                                        <div class="mr-auto">
-                                            <h6 class="mb-2 lh-100">
-                                                <a href="#">image</a>
-                                            </h6>
-                                            <p class="lh-100">56kb</p>
-                                        </div>
-                                        <div class="dropdown">
-                                            <button class="btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                                <i data-eva="more-vertical"></i>
-                                                <span class="sr-only">Toggle Dropdown</span>
-                                            </button>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <button class="dropdown-item" type="button">Action</button>
-                                                <button class="dropdown-item" type="button">Another action</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-body d-flex align-items-center">
-                      <span class="icon bg-neutral border rounded-circle">
-                        <i data-eva="film" data-eva-width="20" data-eva-height="20"></i>
-                      </span>
-                                        <span class="avatar avatar-sm bg-info mr-3 ml-n3 border rounded-circle">jd</span>
-                                        <div class="mr-auto">
-                                            <h6 class="mb-2 lh-100">
-                                                <a href="#">video</a>
-                                            </h6>
-                                            <p class="lh-100">64kb</p>
-                                        </div>
-                                        <div class="dropdown">
-                                            <button class="btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                                <i data-eva="more-vertical"></i>
-                                                <span class="sr-only">Toggle Dropdown</span>
-                                            </button>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <button class="dropdown-item" type="button">Action</button>
-                                                <button class="dropdown-item" type="button">Another action</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -691,8 +123,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/eva-icons@1.1.2/eva.min.js"></script>
 <script src="assets/js/offcanvas.min.js"></script>
-<script>
-    eva.replace()
-</script>
+<script src="assets/js/list.js"></script>
 </body>
 </html>
