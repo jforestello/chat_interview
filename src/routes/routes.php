@@ -18,6 +18,7 @@ $router->middleware(["logged"])->group(function (Router $router) {
     $router->put('chat/{id}', ['name' => 'logged.send_message', 'uses' => 'App\Controllers\ChatController@send']);
     $router->get('chat/{id}/update', ['name' => 'logged.fetch_messages', 'uses' => 'App\Controllers\ChatController@fetchNew']);
     $router->post('logout', ['name' => 'logged.logout', 'uses' => 'App\Controllers\UsersController@logout']);
+    $router->get('users/available', ['name' => 'logged.available', 'uses' => 'App\Controllers\ChatController@getNewChatUsers']);
 });
 
 // catch-all route

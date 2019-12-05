@@ -9,7 +9,7 @@ use Illuminate\Routing\Redirector;
 
 class UsersController extends Controller
 {
-    public function login(Request $request, UserRepository $repository, Redirector $redirect)
+    public function login(Request $request, UserRepository $repository)
     {
         $input = $request->request->all();
         $errors = [];
@@ -35,7 +35,7 @@ class UsersController extends Controller
         }
 
         $_SESSION['user'] = $user;
-        return $redirect->route('logged.list');
+        return redirect('/list');
     }
 
     public function register(Request $request, UserRepository $repository)
@@ -80,8 +80,8 @@ class UsersController extends Controller
         return $this->parseView('guest/register.html.twig', compact('success'));
     }
 
-    public function logout(Request $request, UserRepository $repository, Redirector $redirect)
-    {
-
+    public function logout() {
+        unset($_SESSION['user']);
+        return redirect('/');
     }
 }

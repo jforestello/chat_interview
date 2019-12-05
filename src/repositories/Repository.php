@@ -16,6 +16,10 @@ class Repository {
         $this->connector = $database;
     }
 
+    protected function getConnector() : Database {
+        return $this->connector;
+    }
+
     /**
      * @param iModel $model
      * @param array $filters

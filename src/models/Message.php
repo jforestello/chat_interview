@@ -8,7 +8,7 @@ class Message implements iModel {
 
     /* @var int */
     private $id;
-    /* @var bool */
+    /* @var int */
     private $seen;
     /* @var string */
     private $message;
@@ -37,18 +37,18 @@ class Message implements iModel {
     }
 
     /**
-     * @return bool
+     * @return int
      */
-    public function isSeen(): ?bool
+    public function getSeen(): ?int
     {
         return $this->seen;
     }
 
     /**
-     * @param bool $seen
+     * @param int $seen
      * @return Message
      */
-    public function setSeen(bool $seen): Message
+    public function setSeen(int $seen): Message
     {
         $this->seen = $seen;
 
