@@ -5,7 +5,6 @@ namespace App\controllers;
 use App\models\User;
 use App\repositories\UserRepository;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Redirector;
 
 class UsersController extends Controller
 {

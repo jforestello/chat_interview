@@ -118,7 +118,10 @@
         aliveInterval = setInterval(() => createRequest({
             type: 'GET',
             target: '/chat/' + loader.chatId + '/update',
-            success: (result) => loadMessages(result)
+            success: (result) => loadMessages({
+                messages: result,
+                acronym: loader.acronym
+            })
         }), 1000);
         document.getElementById('submit-form').onsubmit = () => {
             const messageField = document.getElementById('message-field');
@@ -169,6 +172,7 @@
             const [targetBody, targetAcronym] = message['owner_user'] ? [ownMessageTemplate, ownAcronym] : [otherMessageTemplate, data.acronym];
             chatBody.innerHTML += targetBody.replace('{{acronym}}', targetAcronym).replace('{{message_body}}', message['message']);
         });
+        chatBody.scrollTop = chatBody.scrollHeight;
     };
 
     const addEventToOption = (option) => {

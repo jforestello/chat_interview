@@ -120,9 +120,12 @@ class ChatController extends Controller
         }
     }
 
-    public function fetchNew(Request $request, int $id)
+    public function fetchNew(int $id, MessageRepository $messageRepository)
     {
-
+        /* @var $loggedUser User */
+        $loggedUser = $_SESSION['user'];
+        $messages = $messageRepository->fetchNew($id, $loggedUser->getId());
+        return json_encode($messages);
     }
 
     public function getNewChatUsers(ChatChannelRepository $repository)

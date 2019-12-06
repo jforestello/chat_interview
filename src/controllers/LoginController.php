@@ -2,9 +2,6 @@
 
 namespace App\controllers;
 
-use App\repositories\UserRepository;
-use Illuminate\Http\Request;
-
 class LoginController extends Controller
 {
     public function login()

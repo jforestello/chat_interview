@@ -8,7 +8,7 @@ use Twig\Loader\FilesystemLoader;
 
 class Controller {
     private const VIEWS_PATH = "\\src\\views";
-    private const NOT_FOUND_VIEW_PATH = "404_not_found.html";
+    private const NOT_FOUND_VIEW_PATH = "404_not_found.html.twig";
 
     final protected function parseView(string $viewName, array $params = []) : string {
         $loader = new FilesystemLoader(DOCUMENT_ROOT . self::VIEWS_PATH);
